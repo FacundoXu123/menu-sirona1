@@ -21,13 +21,143 @@ const UPLOAD_DIR = STORAGE_DIR
   : path.join(PUBLIC_DIR, 'uploads');
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-if (STORAGE_DIR) fs.mkdirSync(STORAGE_DIR, { recursive: true });
+const DEFAULT_MENU = {
+  "business": {
+    "name": "Café Demo",
+    "subtitle": "Café de especialidad · Pastelería · Brunch",
+    "currency": "$",
+    "instagram": "@cafedemo",
+    "whatsapp": "+54 11 0000-0000",
+    "address": "Dirección no disponible",
+    "hours": "Lunes a domingo · 08:00 a 20:00",
+    "slug": "cafedemo",
+    "publicUrl": "",
+    "heroImage": ""
+  },
+  "categories": [
+    {
+      "id": "cafe",
+      "name": "Cafetería",
+      "description": "Preparado al momento",
+      "order": 1
+    },
+    {
+      "id": "te",
+      "name": "Tés e infusiones",
+      "description": "Opciones clásicas y especiales",
+      "order": 2
+    },
+    {
+      "id": "pasteleria",
+      "name": "Pastelería",
+      "description": "Productos de muestra",
+      "order": 3
+    },
+    {
+      "id": "salados",
+      "name": "Salados",
+      "description": "Opciones para cualquier momento",
+      "order": 4
+    }
+  ],
+  "products": [
+    {
+      "id": "espresso",
+      "categoryId": "cafe",
+      "name": "Espresso",
+      "description": "Café intenso y equilibrado.",
+      "price": 2500,
+      "available": true,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "latte",
+      "categoryId": "cafe",
+      "name": "Latte",
+      "description": "Espresso con leche vaporizada.",
+      "price": 3500,
+      "available": true,
+      "featured": true,
+      "image": ""
+    },
+    {
+      "id": "matcha",
+      "categoryId": "te",
+      "name": "Matcha latte",
+      "description": "Matcha suave con leche a elección.",
+      "price": 3900,
+      "available": true,
+      "featured": true,
+      "image": ""
+    },
+    {
+      "id": "te-hebras",
+      "categoryId": "te",
+      "name": "Té en hebras",
+      "description": "Variedad sujeta a disponibilidad.",
+      "price": 3000,
+      "available": true,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "croissant",
+      "categoryId": "pasteleria",
+      "name": "Croissant",
+      "description": "Mantecoso y recién horneado.",
+      "price": 2800,
+      "available": true,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "torta",
+      "categoryId": "pasteleria",
+      "name": "Porción de torta",
+      "description": "Sabor del día.",
+      "price": 4200,
+      "available": false,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "tostado",
+      "categoryId": "salados",
+      "name": "Tostado",
+      "description": "Pan artesanal con relleno a elección.",
+      "price": 5200,
+      "available": true,
+      "featured": true,
+      "image": ""
+    }
+  ]
+};
+
+fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-// En el primer inicio con almacenamiento persistente, copiamos el menú de ejemplo.
-if (STORAGE_DIR && !fs.existsSync(DATA_FILE)) {
-  fs.copyFileSync(BUNDLED_DATA_FILE, DATA_FILE);
+function cloneDefaultMenu() {
+  return JSON.parse(JSON.stringify(DEFAULT_MENU));
 }
+
+function ensureDataFile() {
+  if (fs.existsSync(DATA_FILE)) return;
+
+  let initialMenu = cloneDefaultMenu();
+  if (DATA_FILE !== BUNDLED_DATA_FILE && fs.existsSync(BUNDLED_DATA_FILE)) {
+    try {
+      initialMenu = JSON.parse(fs.readFileSync(BUNDLED_DATA_FILE, 'utf8'));
+    } catch (error) {
+      console.warn('No se pudo leer el menú incluido; se usará el menú de ejemplo interno:', error.message);
+    }
+  }
+
+  fs.writeFileSync(DATA_FILE, JSON.stringify(initialMenu, null, 2), 'utf8');
+  console.log(`Archivo de menú creado en ${DATA_FILE}`);
+}
+
+ensureDataFile();
 
 app.set('trust proxy', 1);
 app.use(express.json({ limit: '8mb' }));
@@ -49,10 +179,12 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 app.use(express.static(PUBLIC_DIR));
 
 function readMenu() {
+  ensureDataFile();
   return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
 }
 
 function writeMenu(menu) {
+  fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
   const tempFile = `${DATA_FILE}.tmp`;
   fs.writeFileSync(tempFile, JSON.stringify(menu, null, 2), 'utf8');
   fs.renameSync(tempFile, DATA_FILE);
