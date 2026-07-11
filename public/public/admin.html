@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Administrar menú</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body>
+  <main id="loginView" class="login-shell">
+    <form id="loginForm" class="login-card">
+      <span class="brand-mark">☕</span>
+      <p class="eyebrow">PANEL PRIVADO</p>
+      <h1>Administrar menú</h1>
+      <p class="muted">Esta pantalla no aparece en el menú que ven los clientes.</p>
+      <label>
+        Contraseña
+        <input id="password" type="password" autocomplete="current-password" required />
+      </label>
+      <button class="button button--primary" type="submit">Ingresar</button>
+      <p id="loginError" class="error" hidden></p>
+    </form>
+  </main>
+
+  <div id="adminView" class="admin-layout" hidden>
+    <aside class="sidebar">
+      <a class="sidebar__brand" data-public-menu-link href="/" target="_blank" rel="noreferrer">
+        <span>☕</span>
+        <div><strong id="sidebarBusinessName">Menú Café</strong><small>Panel de edición</small></div>
+      </a>
+      <nav>
+        <button class="nav-button is-active" data-panel="products">Productos</button>
+        <button class="nav-button" data-panel="categories">Categorías</button>
+        <button class="nav-button" data-panel="business">Datos del local</button>
+        <button class="nav-button" data-panel="qr">Código QR</button>
+      </nav>
+      <div class="sidebar__footer">
+        <a data-public-menu-link href="/" target="_blank" rel="noreferrer">Ver menú público ↗</a>
+        <button id="logoutButton" class="text-button">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="workspace__header">
+        <div>
+          <p class="eyebrow">ADMINISTRACIÓN</p>
+          <h1 id="panelTitle">Productos</h1>
+        </div>
+        <button id="primaryAction" class="button button--primary">Nuevo producto</button>
+      </header>
+
+      <div id="notice" class="notice" hidden></div>
+
+      <section id="productsPanel" class="panel">
+        <div class="panel-card">
+          <div class="panel-toolbar">
+            <input id="productSearch" type="search" placeholder="Buscar producto..." />
+            <select id="productCategoryFilter"><option value="all">Todas las categorías</option></select>
+          </div>
+          <div id="productTable" class="table"></div>
+        </div>
+      </section>
+
+      <section id="categoriesPanel" class="panel" hidden>
+        <div class="panel-card">
+          <div id="categoryTable" class="table"></div>
+        </div>
+      </section>
+
+      <section id="businessPanel" class="panel" hidden>
+        <form id="businessForm" class="panel-card form-grid">
+          <label>Nombre del local<input name="name" required /></label>
+          <label>Subtítulo<input name="subtitle" /></label>
+          <label>Símbolo de moneda<input name="currency" maxlength="5" /></label>
+          <label>Instagram<input name="instagram" /></label>
+          <label>WhatsApp<input name="whatsapp" /></label>
+          <label>Dirección<input name="address" /></label>
+          <label>Ruta corta local<input name="slug" placeholder="sironacafe" /></label>
+          <label class="span-2">Horarios<input name="hours" /></label>
+          <label class="span-2">Dominio o URL pública (opcional)
+            <input name="publicUrl" type="url" placeholder="https://menusirona.com" />
+            <small>El QR usará esta dirección cuando el sitio ya esté publicado. El dominio debe comprarse y conectarse al hosting.</small>
+          </label>
+          <label class="span-2 file-field">Foto de portada (opcional)
+            <input id="businessHeroFile" name="heroFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+            <small>Podés elegir una foto descargada. Máximo 5 MB.</small>
+          </label>
+          <div class="span-2 image-picker-preview image-picker-preview--wide">
+            <img id="businessHeroPreview" alt="Vista previa de la portada" hidden />
+            <span id="businessHeroEmpty">Sin foto de portada.</span>
+          </div>
+          <label class="checkbox span-2"><input id="removeBusinessHero" name="removeHeroImage" type="checkbox" /> Quitar la foto de portada actual</label>
+          <div class="span-2 info-box">
+            <strong>Direcciones locales</strong>
+            <span>Mientras lo probás en tu computadora seguirá existiendo localhost. Con la ruta corta también podrás abrir algo como <code>http://localhost:3000/sironacafe</code>.</span>
+          </div>
+          <div class="span-2 form-actions"><button class="button button--primary" type="submit">Guardar cambios</button></div>
+        </form>
+      </section>
+
+      <section id="qrPanel" class="panel" hidden>
+        <div class="panel-card qr-card">
+          <div>
+            <p class="eyebrow">PARA IMPRIMIR</p>
+            <h2>QR del menú público</h2>
+            <p class="muted">Al escanearlo, el cliente entra directamente al menú. No ve el panel de administración.</p>
+            <p><strong>URL:</strong> <span id="qrUrl"></span></p>
+            <a id="downloadQr" class="button button--primary" download="menu-qr.png">Descargar QR</a>
+          </div>
+          <div class="qr-preview"><img id="qrImage" alt="Código QR del menú" /></div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <dialog id="editorDialog">
+    <form id="editorForm" method="dialog" class="dialog-card">
+      <div class="dialog-header">
+        <div><p class="eyebrow">EDITOR</p><h2 id="dialogTitle">Nuevo producto</h2></div>
+        <button class="icon-button" value="cancel" aria-label="Cerrar">×</button>
+      </div>
+      <div id="dialogFields" class="form-grid"></div>
+      <div class="dialog-actions">
+        <button class="button" value="cancel">Cancelar</button>
+        <button id="saveEditorButton" class="button button--primary" value="default">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/admin.js" defer></script>
+</body>
+</html>
