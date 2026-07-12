@@ -1,0 +1,112 @@
+{
+  "business": {
+    "name": "Café Demo",
+    "subtitle": "Café de especialidad · Pastelería · Brunch",
+    "currency": "$",
+    "instagram": "@cafedemo",
+    "whatsapp": "+54 11 0000-0000",
+    "address": "Dirección no disponible",
+    "hours": "Lunes a domingo · 08:00 a 20:00",
+    "slug": "cafedemo",
+    "publicUrl": "",
+    "heroImage": ""
+  },
+  "categories": [
+    {
+      "id": "cafe",
+      "name": "Cafetería",
+      "description": "Preparado al momento",
+      "order": 1
+    },
+    {
+      "id": "te",
+      "name": "Tés e infusiones",
+      "description": "Opciones clásicas y especiales",
+      "order": 2
+    },
+    {
+      "id": "pasteleria",
+      "name": "Pastelería",
+      "description": "Productos de muestra",
+      "order": 3
+    },
+    {
+      "id": "salados",
+      "name": "Salados",
+      "description": "Opciones para cualquier momento",
+      "order": 4
+    }
+  ],
+  "products": [
+    {
+      "id": "espresso",
+      "categoryId": "cafe",
+      "name": "Espresso",
+      "description": "Café intenso y equilibrado.",
+      "price": 2500,
+      "available": true,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "latte",
+      "categoryId": "cafe",
+      "name": "Latte",
+      "description": "Espresso con leche vaporizada.",
+      "price": 3500,
+      "available": true,
+      "featured": true,
+      "image": ""
+    },
+    {
+      "id": "matcha",
+      "categoryId": "te",
+      "name": "Matcha latte",
+      "description": "Matcha suave con leche a elección.",
+      "price": 3900,
+      "available": true,
+      "featured": true,
+      "image": ""
+    },
+    {
+      "id": "te-hebras",
+      "categoryId": "te",
+      "name": "Té en hebras",
+      "description": "Variedad sujeta a disponibilidad.",
+      "price": 3000,
+      "available": true,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "croissant",
+      "categoryId": "pasteleria",
+      "name": "Croissant",
+      "description": "Mantecoso y recién horneado.",
+      "price": 2800,
+      "available": true,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "torta",
+      "categoryId": "pasteleria",
+      "name": "Porción de torta",
+      "description": "Sabor del día.",
+      "price": 4200,
+      "available": false,
+      "featured": false,
+      "image": ""
+    },
+    {
+      "id": "tostado",
+      "categoryId": "salados",
+      "name": "Tostado",
+      "description": "Pan artesanal con relleno a elección.",
+      "price": 5200,
+      "available": true,
+      "featured": true,
+      "image": ""
+    }
+  ]
+}
